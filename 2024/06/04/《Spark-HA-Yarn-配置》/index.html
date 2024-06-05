@@ -170,12 +170,68 @@
     </div>
     
     <div class="content" v-pre>
-        <h2 id="参考资料"><a href="#参考资料" class="headerlink" title="参考资料"></a>参考资料</h2><blockquote>
-<ul>
-<li><a href=""></a></li>
-<li><a href=""></a></li>
-</ul>
+        <h1 id="Spark-StandAlone-HA-环境搭建"><a href="#Spark-StandAlone-HA-环境搭建" class="headerlink" title="Spark StandAlone HA 环境搭建"></a>Spark StandAlone HA 环境搭建</h1><h2 id="步骤"><a href="#步骤" class="headerlink" title="步骤"></a>步骤</h2><blockquote>
+<p>前提: 确保Zookeeper 和 HDFS 均已经启动</p>
 </blockquote>
+<p>先在<code>spark-env.sh</code>中, 删除: <code>SPARK_MASTER_HOST=node1</code></p>
+<p>原因: 配置文件中固定master是谁, 那么就无法用到zk的动态切换master功能了.</p>
+<p>在<code>spark-env.sh</code>中, 增加:</p>
+<pre><code>SPARK_DAEMON_JAVA_OPTS=&quot;-Dspark.deploy.recoveryMode=ZOOKEEPER -	Dspark.deploy.zookeeper.url=node1:2181,node2:2181,node3:2181 Dspark.deploy.zookeeper.dir=/spark-ha&quot;
+# spark.deploy.recoveryMode 指定HA模式 基于Zookeeper实现
+# 指定Zookeeper的连接地址
+# 指定在Zookeeper中注册临时节点的路径
+</code></pre>
+<p>将spark-env.sh 分发到每一台服务器上</p>
+<pre><code>scp spark-env.sh node2:/export/server/spark/conf/
+scp spark-env.sh node3:/export/server/spark/conf/
+</code></pre>
+<p>停止当前StandAlone集群</p>
+<pre><code>sbin/stop-all.sh
+</code></pre>
+<p>启动集群:</p>
+<pre><code># 在node1上 启动一个master 和全部worker
+sbin/start-all.sh
+
+# 注意, 下面命令在node2上执行
+sbin/start-master.sh
+# 在node2上启动一个备用的master进程
+</code></pre>
+<p><img src="/./md%E5%9B%BE/spark.assets/14.jpg"></p>
+<p><img src="/./md%E5%9B%BE/spark.assets/15.jpg"></p>
+<h2 id="master主备切换"><a href="#master主备切换" class="headerlink" title="master主备切换"></a>master主备切换</h2><p>提交一个spark任务到当前<code>alive</code>master上:</p>
+<pre><code>bin/spark-submit --master spark://node1:7077 		/export/server/spark/examples/src/main/python/pi.py 1000
+</code></pre>
+<p>在提交成功后, 将alivemaster直接kill掉</p>
+<p>不会影响程序运行:</p>
+<p><img src="/./md%E5%9B%BE/spark.assets/16.jpg"></p>
+<p>当新的master接收集群后, 程序继续运行, 正常得到结果.</p>
+<blockquote>
+<p>结论 HA模式下, 主备切换 不会影响到正在运行的程序.</p>
+<p>最大的影响是 会让它中断大约30秒左右.</p>
+</blockquote>
+<h1 id="Spark-On-YARN-环境搭建"><a href="#Spark-On-YARN-环境搭建" class="headerlink" title="Spark On YARN 环境搭建"></a>Spark On YARN 环境搭建</h1><h2 id="部署"><a href="#部署" class="headerlink" title="部署"></a>部署</h2><p>确保:</p>
+<ul>
+<li>HADOOP_CONF_DIR</li>
+<li>YARN_CONF_DIR</li>
+</ul>
+<p>在spark-env.sh 以及 环境变量配置文件中即可</p>
+<h2 id="连接到YARN中"><a href="#连接到YARN中" class="headerlink" title="连接到YARN中"></a>连接到YARN中</h2><h3 id="bin-pyspark"><a href="#bin-pyspark" class="headerlink" title="bin&#x2F;pyspark"></a>bin&#x2F;pyspark</h3><pre><code>bin/pyspark --master yarn --deploy-mode client|cluster
+# --deploy-mode 选项是指定部署模式, 默认是 客户端模式
+# client就是客户端模式
+# cluster就是集群模式
+# --deploy-mode 仅可以用在YARN模式下
+</code></pre>
+<blockquote>
+<p>注意: 交互式环境 pyspark  和 spark-shell  无法运行 cluster模式</p>
+</blockquote>
+<h3 id="bin-spark-shell"><a href="#bin-spark-shell" class="headerlink" title="bin&#x2F;spark-shell"></a>bin&#x2F;spark-shell</h3><pre><code>bin/spark-shell --master yarn --deploy-mode client|cluster
+</code></pre>
+<blockquote>
+<p>注意: 交互式环境 pyspark  和 spark-shell  无法运行 cluster模式</p>
+</blockquote>
+<h3 id="bin-spark-submit-PI"><a href="#bin-spark-submit-PI" class="headerlink" title="bin&#x2F;spark-submit (PI)"></a>bin&#x2F;spark-submit (PI)</h3><pre><code>bin/spark-submit --master yarn --deploy-mode client|cluster 			/xxx/xxx/xxx.py 参数
+</code></pre>
+<h2 id="spark-submit-和-spark-shell-和-pyspark的相关参数"><a href="#spark-submit-和-spark-shell-和-pyspark的相关参数" class="headerlink" title="spark-submit 和 spark-shell 和 pyspark的相关参数"></a>spark-submit 和 spark-shell 和 pyspark的相关参数</h2><p>参见: 附2</p>
 
     </div>
     

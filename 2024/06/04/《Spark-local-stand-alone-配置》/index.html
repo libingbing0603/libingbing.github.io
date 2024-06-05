@@ -178,7 +178,8 @@
 <h2 id="Anaconda-On-Linux-安装"><a href="#Anaconda-On-Linux-安装" class="headerlink" title="Anaconda On Linux 安装"></a>Anaconda On Linux 安装</h2><p>本次课程的Python环境需要安装到Linux(虚拟机)和Windows(本机)上</p>
 <p>参见最下方, 附1: Anaconda On Linux 安装</p>
 <h2 id="解压"><a href="#解压" class="headerlink" title="解压"></a>解压</h2><p>解压下载的Spark安装包</p>
-<p><code>tar -zxvf spark-3.2.0-bin-hadoop3.2.tgz -C /export/server/</code></p>
+<pre><code>tar -zxvf spark-3.2.0-bin-hadoop3.2.tgz -C /export/server/
+</code></pre>
 <h2 id="环境变量"><a href="#环境变量" class="headerlink" title="环境变量"></a>环境变量</h2><p>配置Spark由如下5个环境变量需要设置</p>
 <ul>
 <li>SPARK_HOME: 表示Spark安装路径在哪里 </li>
@@ -188,38 +189,51 @@
 <li>HADOOP_HOME: 告知Spark  Hadoop安装在哪里</li>
 </ul>
 <p>这5个环境变量 都需要配置在: <code>/etc/profile</code>中</p>
+<p><img src="/./md%E5%9B%BE/spark.assets/1.jpg"></p>
 <p>PYSPARK_PYTHON和 JAVA_HOME 需要同样配置在: <code>/root/.bashrc</code>中</p>
+<p><img src="/./md%E5%9B%BE/spark.assets/2.jpg"></p>
 <h2 id="上传Spark安装包"><a href="#上传Spark安装包" class="headerlink" title="上传Spark安装包"></a>上传Spark安装包</h2><p>资料中提供了: <code>spark-3.2.0-bin-hadoop3.2.tgz</code></p>
 <p>上传这个文件到Linux服务器中</p>
 <p>将其解压, 课程中将其解压(安装)到: <code>/export/server</code>内.</p>
-<p><code>tar -zxvf spark-3.2.0-bin-hadoop3.2.tgz -C /export/server/</code></p>
+<pre><code>tar -zxvf spark-3.2.0-bin-hadoop3.2.tgz -C /export/server/
+</code></pre>
 <p>由于spark目录名称很长, 给其一个软链接:</p>
-<p><code>ln -s /export/server/spark-3.2.0-bin-hadoop3.2 /export/server/spark</code></p>
+<pre><code>ln -s /export/server/spark-3.2.0-bin-hadoop3.2 /export/server/spark
+</code></pre>
+<p><img src="/./md%E5%9B%BE/spark.assets/2.jpg"></p>
 <h2 id="测试"><a href="#测试" class="headerlink" title="测试"></a>测试</h2><h3 id="bin-pyspark"><a href="#bin-pyspark" class="headerlink" title="bin&#x2F;pyspark"></a>bin&#x2F;pyspark</h3><p>bin&#x2F;pyspark 程序, 可以提供一个  <code>交互式</code>的 Python解释器环境, 在这里面可以写普通python代码, 以及spark代码</p>
+<p><img src="/./md%E5%9B%BE/spark.assets/5.jpg"></p>
+<p>如图:</p>
+<p><img src="/./md%E5%9B%BE/spark.assets/6.jpg"></p>
 <p>在这个环境内, 可以运行spark代码</p>
 <p>图中的: <code>parallelize</code> 和 <code>map</code> 都是spark提供的API</p>
-<p><code>sc.parallelize([1,2,3,4,5]).map(lambda x: x + 1).collect()</code><br>​</p>
+<pre><code>sc.parallelize([1,2,3,4,5]).map(lambda x: x + 1).collect()
+</code></pre>
 <h3 id="WEB-UI-4040"><a href="#WEB-UI-4040" class="headerlink" title="WEB UI (4040)"></a>WEB UI (4040)</h3><p>Spark程序在运行的时候, 会绑定到机器的<code>4040</code>端口上.</p>
 <p>如果4040端口被占用, 会顺延到4041 … 4042…</p>
+<p><img src="/./md%E5%9B%BE/spark.assets/7.jpg"></p>
 <p>4040端口是一个WEBUI端口, 可以在浏览器内打开:</p>
 <p>输入:<code>服务器ip:4040</code> 即可打开:</p>
+<p><img src="/./md%E5%9B%BE/spark.assets/8.jpg"></p>
 <p>打开监控页面后, 可以发现 在程序内仅有一个Driver</p>
 <p>因为我们是Local模式, Driver即管理 又 干活.</p>
 <p>同时, 输入jps</p>
+<p><img src="/./md%E5%9B%BE/spark.assets/8.jpg"></p>
 <p>可以看到local模式下的唯一进程存在</p>
 <p>这个进程 即是master也是worker</p>
 <h3 id="bin-spark-shell-了解"><a href="#bin-spark-shell-了解" class="headerlink" title="bin&#x2F;spark-shell - 了解"></a>bin&#x2F;spark-shell - 了解</h3><p>同样是一个解释器环境, 和<code>bin/pyspark</code>不同的是, 这个解释器环境 运行的不是python代码, 而是scala程序代码</p>
-<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta prompt_">scala&gt; </span><span class="language-bash">sc.parallelize(Array(1,2,3,4,5)).map(x=&gt; x + 1).collect()</span></span><br><span class="line">res0: Array[Int] = Array(2, 3, 4, 5, 6)</span><br></pre></td></tr></table></figure>
-
-
+<p>scala&gt; sc.parallelize(Array(1,2,3,4,5)).map(x&#x3D;&gt; x + 1).collect()<br>res0: Array[Int] &#x3D; Array(2, 3, 4, 5, 6)</p>
 <blockquote>
 <p>这个仅作为了解即可, 因为这个是用于scala语言的解释器环境</p>
 </blockquote>
 <h3 id="bin-spark-submit-PI"><a href="#bin-spark-submit-PI" class="headerlink" title="bin&#x2F;spark-submit (PI)"></a>bin&#x2F;spark-submit (PI)</h3><p>作用: 提交指定的Spark代码到Spark环境中运行</p>
 <p>使用方法:</p>
-<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta prompt_"># </span><span class="language-bash">语法</span></span><br><span class="line">bin/spark-submit [可选的一些选项] jar包或者python代码的路径 [代码的参数]</span><br><span class="line"><span class="meta prompt_"></span></span><br><span class="line"><span class="meta prompt_"># </span><span class="language-bash">示例</span></span><br><span class="line">bin/spark-submit /export/server/spark/examples/src/main/python/pi.py 10</span><br><span class="line"><span class="meta prompt_"># </span><span class="language-bash">此案例 运行Spark官方所提供的示例代码 来计算圆周率值.  后面的10 是主函数接受的参数, 数字越高, 计算圆周率越准确.</span></span><br></pre></td></tr></table></figure>
-
-
+<pre><code>#语法
+bin/spark-submit [可选的一些选项] jar包或者python代码的路径 [代码的参数]
+#示例
+bin/spark-submit /export/server/spark/examples/src/main/python/pi.py 10
+#此案例 运行Spark官方所提供的示例代码 来计算圆周率值.  后面的10 是主函数接受的参数, 数字越高, 计算圆周率越准确.
+</code></pre>
 <p>对比</p>
 <table>
 <thead>
@@ -270,74 +284,143 @@
 <p>Spark的历史服务器, 功能: 将Spark运行的程序的历史日志记录下来, 通过历史服务器方便用户查看程序运行的历史信息.</p>
 <p>搭建集群环境, 我们一般<code>推荐将历史服务器也配置上</code>, 方面以后查看历史记录<br>​</p>
 <h2 id="集群规划"><a href="#集群规划" class="headerlink" title="集群规划"></a>集群规划</h2><p>课程中 使用三台Linux虚拟机来组成集群环境, 非别是:</p>
-<p>node1\ node2\ node3</p>
-<p>node1运行: Spark的Master进程  和 1个Worker进程</p>
-<p>node2运行: spark的1个worker进程</p>
-<p>node3运行: spark的1个worker进程</p>
-<p>整个集群提供: 1个master进程 和 3个worker进程</p>
+<pre><code>#node1\ node2\ node3
+
+node1运行: Spark的Master进程  和 1个Worker进程
+node2运行: spark的1个worker进程
+node3运行: spark的1个worker进程
+#整个集群提供: 1个master进程 和 3个worker进程
+</code></pre>
 <h2 id="安装"><a href="#安装" class="headerlink" title="安装"></a>安装</h2><h3 id="在所有机器安装Python-Anaconda"><a href="#在所有机器安装Python-Anaconda" class="headerlink" title="在所有机器安装Python(Anaconda)"></a>在所有机器安装Python(Anaconda)</h3><p>参考 附1内容, 如何在Linux上安装anaconda</p>
 <p>同时不要忘记 都创建<code>pyspark</code>虚拟环境 以及安装虚拟环境所需要的包<code>pyspark jieba pyhive</code></p>
 <h3 id="在所有机器配置环境变量"><a href="#在所有机器配置环境变量" class="headerlink" title="在所有机器配置环境变量"></a>在所有机器配置环境变量</h3><p>参考 Local模式下 环境变量的配置内容</p>
 <p><code>确保3台都配置</code></p>
-<h3 id="配置配置文件"><a href="#配置配置文件" class="headerlink" title="配置配置文件"></a>配置配置文件</h3><p>进入到spark的配置文件目录中, <code>cd $SPARK_HOME/conf</code></p>
-<p>配置workers文件</p>
-<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta prompt_"># </span><span class="language-bash">改名, 去掉后面的.template后缀</span></span><br><span class="line">mv workers.template workers</span><br><span class="line"><span class="meta prompt_"></span></span><br><span class="line"><span class="meta prompt_"># </span><span class="language-bash">编辑worker文件</span></span><br><span class="line">vim workers</span><br><span class="line"><span class="meta prompt_"># </span><span class="language-bash">将里面的localhost删除, 追加</span></span><br><span class="line">node1</span><br><span class="line">node2</span><br><span class="line">node3</span><br><span class="line">到workers文件内</span><br><span class="line"><span class="meta prompt_"></span></span><br><span class="line"><span class="meta prompt_"># </span><span class="language-bash">功能: 这个文件就是指示了  当前SparkStandAlone环境下, 有哪些worker</span></span><br></pre></td></tr></table></figure>
+<h3 id="配置配置文件"><a href="#配置配置文件" class="headerlink" title="配置配置文件"></a>配置配置文件</h3><pre><code>#改名, 去掉后面的.template后缀
+mv workers.template workers
 
-
-<p>配置spark-env.sh文件</p>
-<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta prompt_"># </span><span class="language-bash">1. 改名</span></span><br><span class="line">mv spark-env.sh.template spark-env.sh</span><br><span class="line"><span class="meta prompt_"></span></span><br><span class="line"><span class="meta prompt_"># </span><span class="language-bash">2. 编辑spark-env.sh, 在底部追加如下内容</span></span><br><span class="line"><span class="meta prompt_"></span></span><br><span class="line"><span class="meta prompt_">#</span><span class="language-bash"><span class="comment"># 设置JAVA安装目录</span></span></span><br><span class="line">JAVA_HOME=/export/server/jdk</span><br><span class="line"><span class="meta prompt_"></span></span><br><span class="line"><span class="meta prompt_">#</span><span class="language-bash"><span class="comment"># HADOOP软件配置文件目录，读取HDFS上文件和运行YARN集群</span></span></span><br><span class="line">HADOOP_CONF_DIR=/export/server/hadoop/etc/hadoop</span><br><span class="line">YARN_CONF_DIR=/export/server/hadoop/etc/hadoop</span><br><span class="line"><span class="meta prompt_"></span></span><br><span class="line"><span class="meta prompt_">#</span><span class="language-bash"><span class="comment"># 指定spark老大Master的IP和提交任务的通信端口</span></span></span><br><span class="line"><span class="meta prompt_"># </span><span class="language-bash">告知Spark的master运行在哪个机器上</span></span><br><span class="line">export SPARK_MASTER_HOST=node1</span><br><span class="line"><span class="meta prompt_"># </span><span class="language-bash">告知sparkmaster的通讯端口</span></span><br><span class="line">export SPARK_MASTER_PORT=7077</span><br><span class="line"><span class="meta prompt_"># </span><span class="language-bash">告知spark master的 webui端口</span></span><br><span class="line">SPARK_MASTER_WEBUI_PORT=8080</span><br><span class="line"><span class="meta prompt_"></span></span><br><span class="line"><span class="meta prompt_"># </span><span class="language-bash">worker cpu可用核数</span></span><br><span class="line">SPARK_WORKER_CORES=1</span><br><span class="line"><span class="meta prompt_"># </span><span class="language-bash">worker可用内存</span></span><br><span class="line">SPARK_WORKER_MEMORY=1g</span><br><span class="line"><span class="meta prompt_"># </span><span class="language-bash">worker的工作通讯地址</span></span><br><span class="line">SPARK_WORKER_PORT=7078</span><br><span class="line"><span class="meta prompt_"># </span><span class="language-bash">worker的 webui地址</span></span><br><span class="line">SPARK_WORKER_WEBUI_PORT=8081</span><br><span class="line"><span class="meta prompt_"></span></span><br><span class="line"><span class="meta prompt_">#</span><span class="language-bash"><span class="comment"># 设置历史服务器</span></span></span><br><span class="line"><span class="meta prompt_"># </span><span class="language-bash">配置的意思是  将spark程序运行的历史日志 存到hdfs的/sparklog文件夹中</span></span><br><span class="line">SPARK_HISTORY_OPTS=&quot;-Dspark.history.fs.logDirectory=hdfs://node1:8020/sparklog/ -Dspark.history.fs.cleaner.enabled=true&quot;</span><br></pre></td></tr></table></figure>
-
-
-<p>注意, 上面的配置的路径 要根据你自己机器实际的路径来写</p>
-<p>在HDFS上创建程序运行历史记录存放的文件夹:</p>
-<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">hadoop fs -mkdir /sparklog</span><br><span class="line">hadoop fs -chmod 777 /sparklog</span><br></pre></td></tr></table></figure>
-
-
+#编辑worker文件
+vim workers
+#将里面的localhost删除, 追加
+node1
+node2
+node3
+到workers文件内
+#功能: 这个文件就是指示了  当前SparkStandAlone环境下, 有哪些worker
+</code></pre>
+<h2 id="设置历史服务器"><a href="#设置历史服务器" class="headerlink" title="设置历史服务器"></a>设置历史服务器</h2><p>配置的意思是  将spark程序运行的历史日志 存到hdfs的&#x2F;sparklog文件夹中</p>
+<p>SPARK_HISTORY_OPTS&#x3D;”-Dspark.history.fs.logDirectory&#x3D;hdfs:&#x2F;&#x2F;node1:8020&#x2F;sparklog&#x2F; -Dspark.history.fs.cleaner.enabled&#x3D;true”</p>
+<pre><code>#1.改名
+mv spark-env.sh.template spark-env.sh
+#2.编辑spark-env.sh, 在底部追加如下内容
+设置JAVA安装目录
+JAVA_HOME=/export/server/jdk
+##HADOOP软件配置文件目录，读取HDFS上文件和运行YARN集群
+HADOOP_CONF_DIR=/export/server/hadoop/etc/hadoop
+YARN_CONF_DIR=/export/server/hadoop/etc/hadoop
+##指定spark老大Master的IP和提交任务的通信端口
+##告知Spark的master运行在哪个机器上
+export SPARK_MASTER_HOST=node1
+##告知sparkmaster的通讯端口
+export SPARK_MASTER_PORT=7077
+##告知spark master的 webui端口
+SPARK_MASTER_WEBUI_PORT=8080
+##worker cpu可用核数
+SPARK_WORKER_CORES=1
+worker可用内存
+SPARK_WORKER_MEMORY=1g
+##worker的工作通讯地址
+SPARK_WORKER_PORT=7078
+##worker的 webui地址
+SPARK_WORKER_WEBUI_PORT=8081
+##设置历史服务器
+##配置的意思是  将spark程序运行的历史日志 存到hdfs的/sparklog文件夹中
+SPARK_HISTORY_OPTS=&quot;-	Dspark.history.fs.logDirectory=hdfs://node1:8020/sparklog/ -	Dspark.history.fs.cleaner.enabled=true&quot;
+</code></pre>
+<p>注意, 上面的配置的路径 要根据你自己机器实际的路径来写<br>在HDFS上创建程序运行历史记录存放的文件夹:</p>
+<pre><code>hadoop fs -mkdir /sparklog
+hadoop fs -chmod 777 /sparklog
+</code></pre>
 <p>配置spark-defaults.conf文件</p>
-<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta prompt_"># </span><span class="language-bash">1. 改名</span></span><br><span class="line">mv spark-defaults.conf.template spark-defaults.conf</span><br><span class="line"><span class="meta prompt_"></span></span><br><span class="line"><span class="meta prompt_"># </span><span class="language-bash">2. 修改内容, 追加如下内容</span></span><br><span class="line"><span class="meta prompt_"># </span><span class="language-bash">开启spark的日期记录功能</span></span><br><span class="line">spark.eventLog.enabled 	true</span><br><span class="line"><span class="meta prompt_"># </span><span class="language-bash">设置spark日志记录的路径</span></span><br><span class="line">spark.eventLog.dir	 hdfs://node1:8020/sparklog/ </span><br><span class="line"><span class="meta prompt_"># </span><span class="language-bash">设置spark日志是否启动压缩</span></span><br><span class="line">spark.eventLog.compress 	true</span><br></pre></td></tr></table></figure>
+<pre><code>#1. 改名
+mv spark-defaults.conf.template spark-defaults.conf
 
-
+#2. 修改内容, 追加如下内容
+#开启spark的日期记录功能
+spark.eventLog.enabled 	true
+#设置spark日志记录的路径
+spark.eventLog.dir	 hdfs://node1:8020/sparklog/ 
+# 设置spark日志是否启动压缩
+spark.eventLog.compress 	true
+</code></pre>
 <p>配置log4j.properties 文件 [可选配置]</p>
-<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta prompt_"># </span><span class="language-bash">1. 改名</span></span><br><span class="line">mv log4j.properties.template log4j.properties</span><br><span class="line"><span class="meta prompt_"></span></span><br><span class="line"><span class="meta prompt_"># </span><span class="language-bash">2. 修改内容 参考下图</span></span><br></pre></td></tr></table></figure>
-
-<blockquote>
-<p>这个文件的修改不是必须的,  为什么修改为WARN. 因为Spark是个话痨</p>
-<p>会疯狂输出日志, 设置级别为WARN 只输出警告和错误日志, 不要输出一堆废话.</p>
-</blockquote>
-<h3 id="将Spark安装文件夹-分发到其它的服务器上"><a href="#将Spark安装文件夹-分发到其它的服务器上" class="headerlink" title="将Spark安装文件夹  分发到其它的服务器上"></a>将Spark安装文件夹  分发到其它的服务器上</h3><figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">scp -r spark-3.1.2-bin-hadoop3.2 root@node2:/export/server/</span><br><span class="line">scp -r spark-3.1.2-bin-hadoop3.2 root@node3:/export/server/</span><br></pre></td></tr></table></figure>
-
-
+<pre><code>#1. 改名
+mv log4j.properties.template log4j.properties
+#2. 修改内容
+</code></pre>
+<p><img src="/./md%E5%9B%BE/spark.assets/8.jpg"></p>
+<p>这个文件的修改不是必须的,  为什么修改为WARN. 因为Spark是个话痨<br>会疯狂输出日志, 设置级别为WARN 只输出警告和错误日志, 不要输出一堆废话.</p>
+<h3 id="将Spark安装文件夹-分发到其它的服务器上"><a href="#将Spark安装文件夹-分发到其它的服务器上" class="headerlink" title="将Spark安装文件夹  分发到其它的服务器上"></a>将Spark安装文件夹  分发到其它的服务器上</h3><pre><code>scp -r spark-3.1.2-bin-hadoop3.2 root@node2:/export/server/
+scp -r spark-3.1.2-bin-hadoop3.2 root@node3:/export/server/
+</code></pre>
 <p>不要忘记, 在node2和node3上 给spark安装目录增加软链接</p>
-<p><code>ln -s /export/server/spark-3.2.0-bin-hadoop3.2 /export/server/spark</code></p>
+<pre><code>ln -s /export/server/spark-3.2.0-bin-hadoop3.2 /export/server/spark
+</code></pre>
 <h3 id="检查"><a href="#检查" class="headerlink" title="检查"></a>检查</h3><p>检查每台机器的:</p>
 <p>JAVA_HOME</p>
 <p>SPARK_HOME</p>
 <p>PYSPARK_PYTHON</p>
 <p>等等 环境变量是否正常指向正确的目录</p>
 <h3 id="启动历史服务器"><a href="#启动历史服务器" class="headerlink" title="启动历史服务器"></a>启动历史服务器</h3><p><code>sbin/start-history-server.sh</code></p>
-<h3 id="启动Spark的Master和Worker进程"><a href="#启动Spark的Master和Worker进程" class="headerlink" title="启动Spark的Master和Worker进程"></a>启动Spark的Master和Worker进程</h3><figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta prompt_"># </span><span class="language-bash">启动全部master和worker</span></span><br><span class="line">sbin/start-all.sh</span><br><span class="line"><span class="meta prompt_"></span></span><br><span class="line"><span class="meta prompt_"># </span><span class="language-bash">或者可以一个个启动:</span></span><br><span class="line"><span class="meta prompt_"># </span><span class="language-bash">启动当前机器的master</span></span><br><span class="line">sbin/start-master.sh</span><br><span class="line"><span class="meta prompt_"># </span><span class="language-bash">启动当前机器的worker</span></span><br><span class="line">sbin/start-worker.sh</span><br><span class="line"><span class="meta prompt_"></span></span><br><span class="line"><span class="meta prompt_"># </span><span class="language-bash">停止全部</span></span><br><span class="line">sbin/stop-all.sh</span><br><span class="line"><span class="meta prompt_"></span></span><br><span class="line"><span class="meta prompt_"># </span><span class="language-bash">停止当前机器的master</span></span><br><span class="line">sbin/stop-master.sh</span><br><span class="line"><span class="meta prompt_"></span></span><br><span class="line"><span class="meta prompt_"># </span><span class="language-bash">停止当前机器的worker</span></span><br><span class="line">sbin/stop-worker.sh</span><br></pre></td></tr></table></figure>
+<h3 id="启动Spark的Master和Worker进程"><a href="#启动Spark的Master和Worker进程" class="headerlink" title="启动Spark的Master和Worker进程"></a>启动Spark的Master和Worker进程</h3><pre><code>#启动全部master和worker
+sbin/start-all.sh
 
+#或者可以一个个启动:
+#启动当前机器的master
+sbin/start-master.sh
+#启动当前机器的worker
+sbin/start-worker.sh
 
+#停止全部
+sbin/stop-all.sh
+
+#停止当前机器的master
+sbin/stop-master.sh
+
+#停止当前机器的worker
+sbin/stop-worker.sh
+</code></pre>
 <h3 id="查看Master的WEB-UI"><a href="#查看Master的WEB-UI" class="headerlink" title="查看Master的WEB UI"></a>查看Master的WEB UI</h3><p>默认端口master我们设置到了8080</p>
 <p>如果端口被占用, 会顺延到8081 …;8082… 8083… 直到申请到端口为止</p>
 <p>可以在日志中查看, 具体顺延到哪个端口上:</p>
 <p><code>Service &#39;MasterUI&#39; could not bind on port 8080. Attempting port 8081.</code></p>
+<p><img src="/./md%E5%9B%BE/spark.assets/11.jpg"></p>
 <h3 id="连接到StandAlone集群"><a href="#连接到StandAlone集群" class="headerlink" title="连接到StandAlone集群"></a>连接到StandAlone集群</h3><h4 id="bin-pyspark-1"><a href="#bin-pyspark-1" class="headerlink" title="bin&#x2F;pyspark"></a>bin&#x2F;pyspark</h4><p>执行:</p>
-<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">bin/pyspark --master spark://node1:7077</span><br><span class="line"><span class="meta prompt_"># </span><span class="language-bash">通过--master选项来连接到 StandAlone集群</span></span><br><span class="line"><span class="meta prompt_"># </span><span class="language-bash">如果不写--master选项, 默认是<span class="built_in">local</span>模式运行</span></span><br><span class="line"></span><br><span class="line"></span><br><span class="line">sc.parallelize([1,2,3,4,5]).map(lambda x: x + 1).collect()</span><br></pre></td></tr></table></figure>
+<pre><code>bin/pyspark --master spark://node1:7077
+
+#通过--master选项来连接到 StandAlone集群
+
+#如果不写--master选项, 默认是local模式运行
+
+sc.parallelize([1,2,3,4,5]).map(lambda x: x + 1).collect()
+</code></pre>
+<p><img src="/./md%E5%9B%BE/spark.assets/12.jpg"></p>
+<h4 id="bin-spark-shell"><a href="#bin-spark-shell" class="headerlink" title="bin&#x2F;spark-shell"></a>bin&#x2F;spark-shell</h4><pre><code>bin/spark-shell --master spark://node1:7077
+
+#同样适用--master来连接到集群使用
 
 
-<h4 id="bin-spark-shell"><a href="#bin-spark-shell" class="headerlink" title="bin&#x2F;spark-shell"></a>bin&#x2F;spark-shell</h4><figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">bin/spark-shell --master spark://node1:7077</span><br><span class="line"><span class="meta prompt_"># </span><span class="language-bash">同样适用--master来连接到集群使用</span></span><br></pre></td></tr></table></figure>
 
 
-<figure class="highlight scala"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// 测试代码</span></span><br><span class="line">sc.parallelize(<span class="type">Array</span>(<span class="number">1</span>,<span class="number">2</span>,<span class="number">3</span>,<span class="number">4</span>,<span class="number">5</span>)).map(x=&gt; x + <span class="number">1</span>).collect()</span><br></pre></td></tr></table></figure>
-
-
-<h4 id="bin-spark-submit-PI-1"><a href="#bin-spark-submit-PI-1" class="headerlink" title="bin&#x2F;spark-submit (PI)"></a>bin&#x2F;spark-submit (PI)</h4><figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">bin/spark-submit --master spark://node1:7077 /export/server/spark/examples/src/main/python/pi.py 100</span><br><span class="line"><span class="meta prompt_"># </span><span class="language-bash">同样使用--master来指定将任务提交到集群运行</span></span><br></pre></td></tr></table></figure>
-
-
+// 测试代码
+sc.parallelize(Array(1,2,3,4,5)).map(x=&gt; x + 1).collect()
+</code></pre>
+<h4 id="bin-spark-submit-PI-1"><a href="#bin-spark-submit-PI-1" class="headerlink" title="bin&#x2F;spark-submit (PI)"></a>bin&#x2F;spark-submit (PI)</h4><pre><code>bin/spark-submit --master spark://node1:7077 			/export/server/spark/examples/src/main/python/pi.py 100
+#同样使用--master来指定将任务提交到集群运行
+</code></pre>
 <h3 id="查看历史服务器WEB-UI"><a href="#查看历史服务器WEB-UI" class="headerlink" title="查看历史服务器WEB UI"></a>查看历史服务器WEB UI</h3><p>历史服务器的默认端口是: 18080</p>
 <p>我们启动在node1上, 可以在浏览器打开:</p>
 <p><code>node1:18080</code>来进入到历史服务器的WEB UI上.</p>
+<p><img src="/./md%E5%9B%BE/spark.assets/13.jpg"></p>
 <p>zookeeper</p>
 
     </div>

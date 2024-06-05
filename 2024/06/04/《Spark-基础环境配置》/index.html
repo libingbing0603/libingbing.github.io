@@ -170,7 +170,287 @@
     </div>
     
     <div class="content" v-pre>
-        
+        <hr>
+<h2 id="title-《Spark-基础环境配置》"><a href="#title-《Spark-基础环境配置》" class="headerlink" title="title: 《Spark 基础环境配置》"></a>title: 《Spark 基础环境配置》</h2><h1 id="一、JDK-1-8安装"><a href="#一、JDK-1-8安装" class="headerlink" title="一、JDK 1.8安装"></a>一、JDK 1.8安装</h1><h3 id="1-上传"><a href="#1-上传" class="headerlink" title="1.上传"></a>1.上传</h3><p>上传 jdk-8u241-linux-x64.tar.gz 到&#x2F;export&#x2F;softwar&#x2F;目录下</p>
+<h3 id="2-node1"><a href="#2-node1" class="headerlink" title="2.node1"></a>2.node1</h3><pre><code>cd /export/softwar/
+tar zxvf jdk-8u241-linux-x64.tar.gz -C /export/server
+
+cd /export/server
+ln -s jdk1.8.0_241 jdk #添加软连接
+
+#配置环境变量
+vim /etc/profile
+
+#添加以下配置
+export JAVA_HOME=/export/server/jdk
+export PATH=$PATH:$JAVA_HOME/bin
+export CLASSPATH=.:$JAVA_HOME/lib/dt.jar:$JAVA_HOME/lib/tools.jar
+</code></pre>
+<h3 id="3-将jdk，profile分发至node2，node3"><a href="#3-将jdk，profile分发至node2，node3" class="headerlink" title="3.将jdk，profile分发至node2，node3"></a>3.将jdk，profile分发至node2，node3</h3><pre><code>scp -r /export/server/jdk1.8.0_241/ root@node2:/export/server/
+scp -r /export/server/jdk1.8.0_241/ root@node3:/export/server/
+
+scp -r /etc/profile root@node2:/etc
+scp -r /etc/profile root@node3:/etc
+</code></pre>
+<h3 id="4-node2-node3上添加jdk软连接"><a href="#4-node2-node3上添加jdk软连接" class="headerlink" title="4.node2,node3上添加jdk软连接"></a>4.node2,node3上添加jdk软连接</h3><pre><code>cd /export/server
+ln -s jdk1.8.0_241 jdk #添加软连接
+ln -s jdk1.8.0_241 jdk #添加软连接
+</code></pre>
+<h3 id="5-node1-node2-node3重新加载环境变量文件"><a href="#5-node1-node2-node3重新加载环境变量文件" class="headerlink" title="5.node1,node2,node3重新加载环境变量文件"></a>5.node1,node2,node3重新加载环境变量文件</h3><pre><code>source /etc/profile
+</code></pre>
+<h3 id="6-node1-node2-node3检验jdk环境是否正常"><a href="#6-node1-node2-node3检验jdk环境是否正常" class="headerlink" title="6.node1,node2,node3检验jdk环境是否正常"></a>6.node1,node2,node3检验jdk环境是否正常</h3><pre><code>java -version
+</code></pre>
+<h1 id="二、Hadoop-3-3-0安装"><a href="#二、Hadoop-3-3-0安装" class="headerlink" title="二、Hadoop-3.3.0安装"></a>二、Hadoop-3.3.0安装</h1><h3 id="1-上传-1"><a href="#1-上传-1" class="headerlink" title="1.上传"></a>1.上传</h3><p>上传 hadoop-3.3.0-Centos7-64-with-snappy.tar.gz到&#x2F;export&#x2F;softwar&#x2F;目录下</p>
+<h3 id="2-node1-1"><a href="#2-node1-1" class="headerlink" title="2.node1"></a>2.node1</h3><pre><code>cd /export/softwar/
+tar zxvf hadoop-3.3.0-Centos7-64-with-snappy.tar.gz -C /export/server
+
+cd /export/server
+ln -s hadoop-3.3.0 hadoop #添加软连接
+</code></pre>
+<h3 id="3-hadoop配置"><a href="#3-hadoop配置" class="headerlink" title="3.hadoop配置"></a>3.hadoop配置</h3><h4 id="1-hadoop-env-sh"><a href="#1-hadoop-env-sh" class="headerlink" title="(1)hadoop-env.sh"></a>(1)hadoop-env.sh</h4><pre><code>#文件最后添加
+export JAVA_HOME=/export/server/jdk
+export HDFS_NAMENODE_USER=root
+export HDFS_DATANODE_USER=root
+export HDFS_SECONDARYNAMENODE_USER=root
+export YARN_RESOURCEMANAGER_USER=root
+export YARN_NODEMANAGER_USER=root
+</code></pre>
+<h4 id="2-core-site-xml"><a href="#2-core-site-xml" class="headerlink" title="(2)core-site.xml"></a>(2)core-site.xml</h4><pre><code>    #在&lt;configration&gt;标签内加入配置
+      &lt;!-- 设置默认使用的文件系统 Hadoop支持file、HDFS、GFS、ali|Amazon云等文件系统 --&gt;
+    &lt;property&gt;
+        &lt;name&gt;fs.defaultFS&lt;/name&gt;
+        &lt;value&gt;hdfs://node1:8020&lt;/value&gt;
+    &lt;/property&gt;
+
+    &lt;!-- 设置Hadoop本地保存数据路径 --&gt;
+    &lt;property&gt;
+        &lt;name&gt;hadoop.tmp.dir&lt;/name&gt;
+        &lt;value&gt;/export/data/hadoop-3.3.0&lt;/value&gt;
+    &lt;/property&gt;
+
+    &lt;!-- 设置HDFS web UI用户身份 --&gt;
+    &lt;property&gt;
+        &lt;name&gt;hadoop.http.staticuser.user&lt;/name&gt;
+        &lt;value&gt;root&lt;/value&gt;
+    &lt;/property&gt;
+
+    &lt;!-- 整合hive 用户代理
+</code></pre>
+<h1 id="三、zookeeper安装"><a href="#三、zookeeper安装" class="headerlink" title="三、zookeeper安装"></a>三、zookeeper安装</h1><h2 id="第一步-准备工作"><a href="#第一步-准备工作" class="headerlink" title="第一步 准备工作"></a><strong>第一步</strong> 准备工作</h2><pre><code>安装前需要安装好jdk
+
+检测集群时间是否同步
+检测防火墙是否关闭
+检测主机 ip映射有没有配置
+</code></pre>
+<h2 id="第二步-解压"><a href="#第二步-解压" class="headerlink" title="第二步 解压"></a><strong>第二步</strong> 解压</h2><p>在node1主机上，解压zookeeper的压缩包到&#x2F;export&#x2F;server路径下去，然后准备进行安装</p>
+<pre><code>cd /export/software
+tar -zxvf zookeeper.tar.gz -C /export/server/
+cd /export/server/
+ln -s zookeeper/ zookeeper
+</code></pre>
+<h2 id="第三步-环境变量"><a href="#第三步-环境变量" class="headerlink" title="第三步 环境变量"></a><strong>第三步</strong> 环境变量</h2><pre><code>##修改环境变量（注意：3台zookeeper都需要修改）
+
+vi /etc/profile
+export ZOOKEEPER_HOME=/export/server/zookeeper
+export PATH=$PATH:$ZOOKEEPER_HOME/bin
+source /etc/profile
+</code></pre>
+<h2 id="第四步-配置文件"><a href="#第四步-配置文件" class="headerlink" title="第四步 配置文件"></a><strong>第四步</strong> 配置文件</h2><pre><code>##修改Zookeeper配置文件
+cd /export/server/zookeeper/conf/
+cp zoo_sample.cfg zoo.cfg
+mkdir -p /export/server/zookeeper/zkdatas/
+vim zoo.cfg
+</code></pre>
+<p>修改以下内容</p>
+<pre><code>#Zookeeper的数据存放目录
+dataDir = /export/server/zookeeper/zkdatas/
+# 保留多少个快照
+autopurge.snapRetainCount = 3
+# 日志多少小时清理一次
+autopurge.purgeInterval = 1
+# 集群中服务器地址
+server.1 = node1:2888:3888
+server.2 = node2:2888:3888
+server.3 = node3:2888:3888
+</code></pre>
+<h2 id="第五步-添加myid配置"><a href="#第五步-添加myid配置" class="headerlink" title="**第五步 **添加myid配置"></a>**第五步 **添加myid配置</h2><p>在node1主机的这个路径下创建一个文件，文件名为myid ,文件内容为1</p>
+<pre><code>echo 1 &gt; /export/data/zookeeper/zkdatas/myid 
+</code></pre>
+<h2 id="第六步-安装包分发并修改myid的值"><a href="#第六步-安装包分发并修改myid的值" class="headerlink" title="**第六步 ** 安装包分发并修改myid的值"></a>**第六步 ** 安装包分发并修改myid的值</h2><p>在node1主机上，将安装包分发到其他机器</p>
+<p>第一台机器上面执行以下两个命令</p>
+<pre><code>cd /export/server/
+
+scp -r /export/server/zookeeper-3.4.6/ root@node2:/export/server/
+
+scp -r /export/server/zookeeper-3.4.6/ root@node3:/export/server/
+</code></pre>
+<p>第二台机器上建立软连接, 并修改myid的值为2</p>
+<pre><code>cd /export/server/
+
+ln -s zookeeper-3.4.6/ zookeeper
+
+echo 2 &gt; /export/server/zookeeper/zkdatas/myid
+</code></pre>
+<p>第三台机器上建立软连接, 并修改myid的值为3</p>
+<pre><code>cd /export/server/
+
+ln -s zookeeper-3.4.6/ zookeeper
+
+echo 3 &gt; /export/server/zookeeper/zkdatas/myid
+</code></pre>
+<h2 id="第七步-三台机器启动zookeeper服务"><a href="#第七步-三台机器启动zookeeper服务" class="headerlink" title="**第七步 ** 三台机器启动zookeeper服务"></a>**第七步 ** 三台机器启动zookeeper服务</h2><p>三台机器分别启动zookeeper服务</p>
+<p>这个命令三台机器都要执行</p>
+<pre><code>/export/server/zookeeper/bin/zkServer.sh start
+</code></pre>
+<p>三台主机分别查看启动状态</p>
+<pre><code>/export/server/zookeeper/bin/zkServer.sh status
+</code></pre>
+<p>##启动（每台机器）<br>zkServer.sh start<br>或者编写一个脚本来批量启动所有机器：</p>
+<p>方法1：</p>
+<pre><code>for host in &quot;node1 node2 node3&quot;
+do
+    ssh $host 	&quot;source/etc/profile;/export/server/zookeeper/bin/zkServer.sh start&quot;
+done
+</code></pre>
+<p>方法2：</p>
+<p>1.创建&#x2F;export&#x2F;shell目录</p>
+<pre><code>mkdir /export/shell
+</code></pre>
+<p>2.编辑创建zk.sh</p>
+<pre><code>vim zkall.sh
+</code></pre>
+<p>3.写shell脚本</p>
+<pre><code>#!/bin/bash
+
+case $1 in
+&quot;start&quot;)&#123;
+    for i in node1 node2 node3
+    do
+        echo ---------- zookeeper $i 启动 ------------
+        ssh $i &quot;/export/server/zookeeper/bin/zkServer.sh start&quot;
+    done
+&#125;;;
+&quot;stop&quot;)&#123;
+    for i in node1 node2 node3
+    do
+        echo ---------- zookeeper $i 停止 ------------ 
+        ssh $i &quot;/export/server/zookeeper/bin/zkServer.sh stop&quot;
+    done
+&#125;;;
+&quot;status&quot;)&#123;
+    for i in node1 node2 node3
+    do
+        echo ---------- zookeeper $i 状态 ------------ 
+        ssh $i &quot;/export/server/zookeeper/bin/zkServer.sh status&quot;
+    done
+&#125;;;
+esac
+</code></pre>
+<p>4.配置zk脚本环境变量</p>
+<pre><code>#SHELL_HOME
+export SHELL_HOME=/export/shell/
+export PATH=$PATH:$SHELL_HOME
+</code></pre>
+<p>6.让环境变量生效</p>
+<pre><code>source /etc/profile
+</code></pre>
+<p>7.启动测试</p>
+<pre><code>chmod 777 /export/shell/zkall.sh
+zkall.sh start
+</code></pre>
+<p>方法3：</p>
+<pre><code>#!/bin/bash
+if [ $# -eq 0 ] #  $#参数的个数
+then
+    echo &quot;please input param:start stop status&quot;
+else
+    if [ $1 = start  ]
+    then
+        for i in &#123;1..3&#125;
+        do
+            echo &quot;$&#123;1&#125;ing node$&#123;i&#125;&quot;
+            ssh node$&#123;i&#125; &quot;source 	/etc/profile;/export/server/zookeeper/bin/zkServer.sh start&quot;
+        done
+    fi
+
+    if [ $1 = stop ]
+    then
+        for i in &#123;1..3&#125;
+        do
+            echo &quot;$&#123;1&#125;ping node$&#123;i&#125;&quot;
+            ssh node$&#123;i&#125; &quot;source /etc/profile;/export/server/zookeeper/bin/zkServer.sh stop&quot;
+        done
+    fi
+
+    if [ $1 = status ]
+    then
+        for i in &#123;1..3&#125;
+        do
+            echo &quot;node$&#123;i&#125; status:&quot;
+            ssh node$&#123;i&#125; &quot;source 	/etc/profile;/export/server/zookeeper/bin/zkServer.sh status&quot;
+        done
+    fi
+
+
+
+
+
+
+#!/bin/bash
+if [ $# -eq 0 ]
+then
+    echo &quot;please input param:start stop&quot;
+else
+    if [ $1 = start  ]
+        then
+            for i in &#123;1..3&#125;
+            do
+                echo &quot;$&#123;1&#125;ing node$&#123;i&#125;&quot;
+                ssh node$&#123;i&#125; &quot;source /etc/profile;/export/server/kafka/bin/kafka-server-start.sh -daemon /export/server/kafka/config/server.properties&quot;
+            done
+    fi
+
+    if [ $1 = stop ]
+        then
+            for i in &#123;1..3&#125;
+            do
+                echo &quot;$&#123;1&#125;ing node$&#123;i&#125;&quot;
+                ssh node$&#123;i&#125; &quot;source 			/etc/profile;/export/server/kafka/bin/kafka-server-stop.sh&quot;
+            done
+    fi
+
+    if [ $1 = status ]
+        then
+            for i in &#123;1..3&#125;
+            do
+                echo &quot;node$&#123;i&#125; status:&quot;
+                ssh node$&#123;i&#125; &quot;source /etc/profile;/export/server/kafka/bin/kafka-server-status.sh&quot;
+            done
+    fi
+fi
+</code></pre>
+<hr>
+<p>配置文件中参数说明:</p>
+<pre><code>tickTime这个时间是作为zookeeper服务器之间或客户端与服务器之间维持心跳的时间间隔,也就是说每个tickTime时间就会发送一个心跳。
+
+initLimit这个配置项是用来配置zookeeper接受客户端（这里所说的客户端不是用户连接zookeeper服务器的客户端,而是zookeeper服务器集群中连接到leader的follower 服务器）初始化连接时最长能忍受多少个心跳时间间隔数。
+
+当已经超过10个心跳的时间（也就是tickTime）长度后 zookeeper 服务器还没有收到客户端的返回信息,那么表明这个客户端连接失败。总的时间长度就是 10*2000=20秒。
+
+syncLimit这个配置项标识leader与follower之间发送消息,请求和应答时间长度,最长不能超过多少个tickTime的时间长度,总的时间长度就是5*2000=10秒。
+
+dataDir顾名思义就是zookeeper保存数据的目录,默认情况下zookeeper将写数据的日志文件也保存在这个目录里；
+
+clientPort这个端口就是客户端连接Zookeeper服务器的端口,Zookeeper会监听这个端口接受客户端的访问请求；
+
+server.A=B:C:D中的A是一个数字,表示这个是第几号服务器,B是这个服务器的IP地址，C第一个端口用来集群成员的信息交换,表示这个服务器与集群中的leader服务器交换信息的端口，D是在leader挂掉时专门用来进行选举leader所用的端口。
+</code></pre>
+<hr>
+<pre><code>export JAVA_HOME=/export/server/jdk
+export PATH=$PATH:$JAVA_HOME/bin
+export CLASSPATH=.:$JAVA_HOME/lib/dt.jar:$JAVA_HOME/lib/tools.jar
+</code></pre>
+
     </div>
     
     
