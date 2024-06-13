@@ -172,6 +172,8 @@
     <div class="content" v-pre>
         <hr>
 <h2 id="title-《Spark-基础环境配置》"><a href="#title-《Spark-基础环境配置》" class="headerlink" title="title: 《Spark 基础环境配置》"></a>title: 《Spark 基础环境配置》</h2><h1 id="一、JDK-1-8安装"><a href="#一、JDK-1-8安装" class="headerlink" title="一、JDK 1.8安装"></a>一、JDK 1.8安装</h1><h3 id="1-上传"><a href="#1-上传" class="headerlink" title="1.上传"></a>1.上传</h3><p>上传 jdk-8u241-linux-x64.tar.gz 到&#x2F;export&#x2F;softwar&#x2F;目录下</p>
+<span id="more"></span>
+
 <h3 id="2-node1"><a href="#2-node1" class="headerlink" title="2.node1"></a>2.node1</h3><pre><code>cd /export/softwar/
 tar zxvf jdk-8u241-linux-x64.tar.gz -C /export/server
 
@@ -366,29 +368,29 @@ then
 else
     if [ $1 = start  ]
     then
-        for i in &#123;1..3&#125;
-        do
-            echo &quot;$&#123;1&#125;ing node$&#123;i&#125;&quot;
-            ssh node$&#123;i&#125; &quot;source 	/etc/profile;/export/server/zookeeper/bin/zkServer.sh start&quot;
-        done
+    	for i in &#123;1..3&#125;
+    	do
+        	echo &quot;$&#123;1&#125;ing node$&#123;i&#125;&quot;
+        	ssh node$&#123;i&#125; &quot;source 	/etc/profile;/export/server/zookeeper/bin/zkServer.sh start&quot;
+    	done
     fi
 
     if [ $1 = stop ]
     then
-        for i in &#123;1..3&#125;
-        do
-            echo &quot;$&#123;1&#125;ping node$&#123;i&#125;&quot;
-            ssh node$&#123;i&#125; &quot;source /etc/profile;/export/server/zookeeper/bin/zkServer.sh stop&quot;
-        done
+    	for i in &#123;1..3&#125;
+    	do
+        	echo &quot;$&#123;1&#125;ping node$&#123;i&#125;&quot;
+        	ssh node$&#123;i&#125; &quot;source /etc/profile;/export/server/zookeeper/bin/zkServer.sh stop&quot;
+    	done
     fi
 
     if [ $1 = status ]
     then
-        for i in &#123;1..3&#125;
-        do
-            echo &quot;node$&#123;i&#125; status:&quot;
-            ssh node$&#123;i&#125; &quot;source 	/etc/profile;/export/server/zookeeper/bin/zkServer.sh status&quot;
-        done
+    	for i in &#123;1..3&#125;
+    	do
+        	echo &quot;node$&#123;i&#125; status:&quot;
+        	ssh node$&#123;i&#125; &quot;source 	/etc/profile;/export/server/zookeeper/bin/zkServer.sh status&quot;
+    	done
     fi
 
 

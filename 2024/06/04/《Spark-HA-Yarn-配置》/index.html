@@ -173,6 +173,8 @@
         <h1 id="Spark-StandAlone-HA-环境搭建"><a href="#Spark-StandAlone-HA-环境搭建" class="headerlink" title="Spark StandAlone HA 环境搭建"></a>Spark StandAlone HA 环境搭建</h1><h2 id="步骤"><a href="#步骤" class="headerlink" title="步骤"></a>步骤</h2><blockquote>
 <p>前提: 确保Zookeeper 和 HDFS 均已经启动</p>
 </blockquote>
+<span id="more"></span>
+
 <p>先在<code>spark-env.sh</code>中, 删除: <code>SPARK_MASTER_HOST=node1</code></p>
 <p>原因: 配置文件中固定master是谁, 那么就无法用到zk的动态切换master功能了.</p>
 <p>在<code>spark-env.sh</code>中, 增加:</p>
